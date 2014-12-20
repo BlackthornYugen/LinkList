@@ -2,7 +2,7 @@
 
 namespace LinkList
 {
-    class LinkList<T>
+    public class LinkList<T>
     {
         private LinkListItem<T> _first;
         private LinkListItem<T> _last;
@@ -26,7 +26,7 @@ namespace LinkList
             var listItem = _first;
             if (listItem == null)
             {
-                throw new Exception("Nothing to pop");
+                return default(T);
             }
             _first = _first.Next;
             if (_first != null)
@@ -37,15 +37,70 @@ namespace LinkList
             return listItem.Element;
         }
 
-        static void Main(string[] args)
+        private LinkListItem<T> SelectAt(int index)
         {
-            var linkList = new LinkList<int>();
-            linkList.Add(30);
-            Console.WriteLine(linkList.Pop() == 30);
+            if(index < 0 || index >= _length){
+                return null;
+            }
+            int steps;
+            LinkListItem<T> pointer;
+
+            if(index < _length / 2){
+                steps = index;
+                pointer = _first;
+                while(steps > 0 && pointer != null){
+                    pointer = pointer.Next;
+                    steps--;
+                }
+            } else {
+                steps = _length - index - 1;
+                pointer = _last;
+                while(steps > 0 && pointer != null){
+                    pointer = pointer.Prev;
+                    steps--;
+                }
+            }
+            return pointer;
+        }
+
+        public T GetElementByIndex(int index)
+        {
+            var selection = SelectAt(index);
+            return selection == null ? default(T) : selection.Element;
+        }
+
+        public LinkListItem<T> GetObjectByIndex(int index)
+        {
+            return SelectAt(index);
+        }
+
+        public int Recount()
+        {
+            int length = 0;
+            LinkListItem<T> pointer = _first;
+            while(pointer != null){
+                length++;
+                pointer = pointer.Next;
+            }
+            return length;
+        }
+
+        public int Length
+        {
+            get { return _length; }
+        }
+
+        public LinkListItem<T> FirstObject
+        {
+            get { return _first; }
+        }
+
+        public LinkListItem<T> LastObject
+        {
+            get { return _last; }
         }
     }
-
-    class LinkListItem<T>
+    public class LinkListItem<T>
     {
         public LinkListItem<T> Prev;
         public LinkListItem<T> Next;
